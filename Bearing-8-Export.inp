@@ -1,0 +1,148 @@
+/COM,===========================================================================
+/COM,EXPORT
+/COM,===========================================================================
+
+FINISH
+
+/COM,---------------------------------------------------------------------------
+/COM,CREATE FILE NAME
+/COM,---------------------------------------------------------------------------
+
+! Create a file name
+*DEL,filename,,NOPR
+*DIM,filename,STRING,128
+*SET,token_TIR,'Tinring-%CHRVAL(temperature_inner_ring)%'
+*SET,token_TOR,'Toutring-%CHRVAL(temperature_outer_ring)%'
+*SET,token_TB,'Tball-%CHRVAL(temperature_ball)%'
+*SET,filename(1),'Symm36-%token_TIR%-%token_TOR%-%token_TB%'
+
+/COM,---------------------------------------------------------------------------
+/COM,OPEN FILE
+/COM,---------------------------------------------------------------------------
+
+! Open the output JSON file
+*CFOPEN,filename(1),json
+
+/COM,---------------------------------------------------------------------------
+/COM,WRITE RESULTS
+/COM,---------------------------------------------------------------------------
+
+! Opening bracket
+*VWRITE,
+('{')
+
+! Temperatures
+*VWRITE,temperature_inner_ring
+('"temperature_inner_ring":                          ',EN28.9E2,',')
+*VWRITE,temperature_outer_ring
+('"temperature_outer_ring":                          ',EN28.9E2,',')
+*VWRITE,temperature_ball
+('"temperature_ball":                                ',EN28.9E2,',')
+
+! Material properties Si3N4
+*VWRITE,Si3N4_Young
+('"Si3N4_Young":                                     ',EN28.9E2,',')
+*VWRITE,Si3N4_Poisson
+('"Si3N4_Poisson":                                   ',EN28.9E2,',')
+*VWRITE,Si3N4_CTE
+('"Si3N4_CTE":                                       ',EN28.9E2,',')
+
+! Material properties CrMnSi
+*VWRITE,CrMnSi_Young
+('"CrMnSi_Young":                                    ',EN28.9E2,',')
+*VWRITE,CrMnSi_Poisson
+('"CrMnSi_Poisson":                                  ',EN28.9E2,',')
+*VWRITE,CrMnSi_CTE
+('"CrMnSi_CTE":                                      ',EN28.9E2,',')
+
+! Dimensions inner ring
+*VWRITE,inring_thickness
+('"inring_thickness":                                ',EN28.9E2,',')
+*VWRITE,inring_diameter_small
+('"inring_diameter_small":                           ',EN28.9E2,',')
+*VWRITE,inring_diameter_groove
+('"inring_diameter_groove":                          ',EN28.9E2,',')
+*VWRITE,inring_diameter_large
+('"inring_diameter_large":                           ',EN28.9E2,',')
+*VWRITE,inring_groove_radius
+('"inring_groove_radius":                            ',EN28.9E2,',')
+*VWRITE,inring_groove_centre
+('"inring_groove_centre":                            ',EN28.9E2,',')
+*VWRITE,inring_groove_depth
+('"inring_groove_depth":                             ',EN28.9E2,',')
+*VWRITE,inring_groove_width
+('"inring_groove_width":                             ',EN28.9E2,',')
+*VWRITE,inring_chamfer
+('"inring_chamfer":                                  ',EN28.9E2,',')
+
+! Outer ring
+*VWRITE,outring_thickness
+('"outring_thickness":                               ',EN28.9E2,',')
+*VWRITE,outring_diameter_small
+('"outring_diameter_small":                          ',EN28.9E2,',')
+*VWRITE,outring_diameter_groove
+('"outring_diameter_groove":                         ',EN28.9E2,',')
+*VWRITE,outring_diameter_large
+('"outring_diameter_large":                          ',EN28.9E2,',')
+*VWRITE,outring_groove_radius
+('"outring_groove_radius":                           ',EN28.9E2,',')
+*VWRITE,outring_groove_centre
+('"outring_groove_centre":                           ',EN28.9E2,',')
+*VWRITE,outring_groove_depth
+('"outring_groove_depth":                            ',EN28.9E2,',')
+*VWRITE,outring_groove_width
+('"outring_groove_width":                            ',EN28.9E2,',')
+*VWRITE,outring_chamfer
+('"outring_chamfer":                                 ',EN28.9E2,',')
+
+! Dimensions ball
+*VWRITE,ball_diameter
+('"ball_diameter":                                   ',EN28.9E2,',')
+*VWRITE,ball_centre_radius
+('"ball_centre_radius":                              ',EN28.9E2,',')
+*VWRITE,balls_count
+('"balls_count":                                     ',EN28.9E2,',')
+*VWRITE,ball_sector_angle
+('"ball_sector_angle":                               ',EN28.9E2,',')
+*VWRITE,half_sector_angle
+('"half_sector_angle":                               ',EN28.9E2,',')
+
+! Information about mesh
+*VWRITE,nodes_count
+('"nodes_count":                                     ',EN28.9E2,',')
+*VWRITE,elements_count
+('"elements_count":                                  ',EN28.9E2,',')
+*VWRITE,make_companion_pairs
+('"make_companion_pairs":                            ',EN28.9E2,',')
+
+! Path on the surface
+*VWRITE,
+('"path_inring":')
+*VLEN,1
+*VWRITE,path_inring(1,4),path_inring(1,5),path_inring(1,6),path_inring(1,7),path_inring(1,8),path_inring(1,9),path_inring(1,10)
+('[[',EN18.9E2,6(',',EN18.9E2),']')
+*VWRITE,path_inring(2,4),path_inring(2,5),path_inring(2,6),path_inring(2,7),path_inring(2,8),path_inring(2,9),path_inring(2,10)
+(',[',EN18.9E2,6(',',EN18.9E2),']')
+*VWRITE,
+('],')
+
+*VWRITE,
+('"path_outring":')
+*VLEN,1
+*VWRITE,path_outring(1,4),path_outring(1,5),path_outring(1,6),path_outring(1,7),path_outring(1,8),path_outring(1,9),path_outring(1,10)
+('[[',EN18.9E2,6(',',EN18.9E2),']')
+*VWRITE,path_outring(2,4),path_outring(2,5),path_outring(2,6),path_outring(2,7),path_outring(2,8),path_outring(2,9),path_outring(2,10)
+(',[',EN18.9E2,6(',',EN18.9E2),']')
+*VWRITE,
+(']')
+
+! Closing bracket
+*VWRITE,
+('}')
+
+/COM,---------------------------------------------------------------------------
+/COM,CLOSE FILE
+/COM,---------------------------------------------------------------------------
+
+! Close file
+*CFCLOS

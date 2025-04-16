@@ -1,0 +1,34 @@
+/COM,===========================================================================
+/COM,BALL BETWEEN TWO THERMALLY LOADED RINGS
+/COM,===========================================================================
+
+! Setup
+/INPUT,Bearing-1-Setup,inp
+
+! Material
+/INPUT,Bearing-2-Material,inp
+
+! Geometry
+/INPUT,Bearing-3-Geometry,inp
+
+! Mesh
+/INPUT,Bearing-4-Mesh,inp
+
+! Boundary conditions
+/INPUT,Bearing-5-BCs,inp
+
+! Solution
+/INPUT,Bearing-6-Solution,inp
+
+*IF,solution_status,EQ,converged,THEN
+
+! Results
+/INPUT,Bearing-7-Results,inp
+
+! Export
+/INPUT,Bearing-8-Export,inp
+
+*ENDIF
+
+! Axial symmetry double check
+! /INPUT,Bearing-9-Axisymm,inp

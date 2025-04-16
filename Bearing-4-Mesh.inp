@@ -1,0 +1,233 @@
+/COM,===========================================================================
+/COM,MESH
+/COM,===========================================================================
+
+/PREP7
+
+*SET,make_companion_pairs,true
+
+/COM,---------------------------------------------------------------------------
+/COM,STRUCTURAL ELEMENTS
+/COM,---------------------------------------------------------------------------
+
+! Structural 20-node element
+*SET,element_structural,186
+ET,element_structural,SOLID186
+KEYOPT,element_structural,2,1
+
+! Auxiliary element
+*SET,auxiliary_element,200
+ET,auxiliary_element,MESH200
+KEYOPT,auxiliary_element,1,7
+
+/COM,---------------------------------------------------------------------------
+/COM,MESH RINGS
+/COM,---------------------------------------------------------------------------
+
+TYPE,auxiliary_element
+MSHAPE,hexahedral_mesh,2D
+MSHKEY,free_mesh
+
+KSEL,S,KP,,101,102,1 $ KSEL,A,KP,,108,109,1
+KSEL,A,KP,,201,202,1 $ KSEL,A,KP,,208,209,1
+KSEL,A,KP,,118,119,1 $ KSEL,A,KP,,508,509,1
+KESIZE,ALL,1*millimeter
+LSLK,S,1 $ ASLL,S,1
+AMESH,ALL $ ALLSEL,ALL
+
+TYPE,element_structural
+MSHAPE,hexahedral_mesh,3D
+MSHKEY,mapped_mesh
+
+LESIZE,112,,,14,0.05/1,1,,,NO
+LESIZE,252,,,16,0.05/1,1,,,NO
+VSWEEP,101,101,106
+VSWEEP,207,230,233
+*IF,mirror_symmetry,EQ,true,THEN
+VSWEEP,102,107,111
+VSWEEP,507,528,530
+*ENDIF
+
+! Mesh inner ring
+ESIZE,4*millimeter
+VSWEEP,inring_volume
+VSWEEP,outring_volume
+
+/COM,---------------------------------------------------------------------------
+/COM,MESH BALL
+/COM,---------------------------------------------------------------------------
+
+*IF,ignore_ball,EQ,false,THEN
+
+CMSEL,S,ball_volume,VOLU
+MSHAPE,hexahedral_mesh,2D
+MSHKEY,free_mesh
+
+! Volume nearest to the outer ring
+KESIZE,3213,1*millimeter
+KESIZE,3212,1*millimeter $ KESIZE,3222,1*millimeter
+KESIZE,3223,1*millimeter $ KESIZE,3224,1*millimeter $ KESIZE,3214,1*millimeter
+TYPE,auxiliary_element
+AMESH,ball_facing_outring
+LESIZE,307,1*millimeter,,,10,1,,,NO
+TYPE,element_structural
+VSWEEP,301,306,301 ! Upper
+VSWEEP,312,347,350 ! Lower
+
+! Volume nearest to the inner ring
+KESIZE,3253,1*millimeter $ KESIZE,3243,1*millimeter
+KESIZE,3252,1*millimeter $ KESIZE,3242,1*millimeter
+KESIZE,3254,1*millimeter $ KESIZE,3244,1*millimeter
+TYPE,auxiliary_element
+AMESH,ball_facing_inring
+LESIZE,332,1*millimeter,,,0.1,1,,,NO
+TYPE,element_structural
+VSWEEP,304,321,317 ! Upper
+VSWEEP,309,334,338 ! Lower
+
+! Mesh ball
+ESIZE,4*millimeter
+MSHAPE,tetrahedral_mesh,3D
+MSHKEY,free_mesh
+TYPE,element_structural
+VMESH,ball_volume
+
+*ENDIF
+
+/COM,---------------------------------------------------------------------------
+/COM,CONTACT ELEMENTS FOR BALLS
+/COM,---------------------------------------------------------------------------
+
+! Target element 3D 8-node surface-surface
+*SET,element_target,170
+ET,element_target,TARGE170
+
+! Contact element 3D 8-node surface-surface
+*SET,element_contact,174
+ET,element_contact,CONTA174
+
+! Contact algorithm
+*SET,augmented_Lagrange,0
+*SET,pure_Lagrange,4
+KEYOPT,element_contact,2,augmented_Lagrange
+
+! Contact detection
+*SET,on_gauss_points,0
+*SET,normal_to_target,2
+KEYOPT,element_contact,4,on_gauss_points
+
+! Automated adjustment
+*SET,no_adjustment,0
+KEYOPT,element_contact,5,no_adjustment
+
+! Ininital gap condideration
+*SET,excluding_gap,1
+KEYOPT,element_contact,9,excluding_gap
+
+! Contact surface behaviour
+*SET,frictionless,0
+KEYOPT,element_contact,12,frictionless
+
+/COM,---------------------------------------------------------------------------
+/COM,BALL TO INNER RING
+/COM,---------------------------------------------------------------------------
+
+*IF,ignore_ball,EQ,false,THEN
+
+! Pair ball to inner ring
+*SET,pair_ball_inring,31
+
+! Target element on inner ring
+CMSEL,S,inring_facing_ball,AREA $ NSLA,S,1
+REAL,pair_ball_inring
+TYPE,element_target
+ESURF
+
+! Contact elements on ball
+CMSEL,S,ball_facing_inring,AREA $ NSLA,S,1
+REAL,pair_ball_inring
+TYPE,element_contact
+ESURF
+
+*ENDIF
+
+/COM,---------------------------------------------------------------------------
+/COM,INNER RING TO BALL
+/COM,---------------------------------------------------------------------------
+
+*IF,ignore_ball,EQ,false,AND,make_companion_pairs,EQ,true,THEN
+
+! Pair inner ring to ball
+*SET,pair_inring_ball,13
+
+! Contact elements on inner ring
+CMSEL,S,inring_facing_ball,AREA $ NSLA,S,1
+REAL,pair_inring_ball
+TYPE,element_contact
+ESURF
+
+! Target elements on ball
+CMSEL,S,ball_facing_inring,AREA $ NSLA,S,1
+REAL,pair_inring_ball
+TYPE,element_target
+ESURF
+
+*ENDIF
+
+/COM,---------------------------------------------------------------------------
+/COM,BALL TO OUTER RING
+/COM,---------------------------------------------------------------------------
+
+*IF,ignore_ball,EQ,false,THEN
+
+! Pair ball to outer ring
+*SET,pair_ball_outring,32
+
+! Target element on outer ring
+CMSEL,S,outring_facing_ball,AREA $ NSLA,S,1
+REAL,pair_ball_outring
+TYPE,element_target
+ESURF
+
+! Contact elements on ball
+CMSEL,S,ball_facing_outring,AREA $ NSLA,S,1
+REAL,pair_ball_outring
+TYPE,element_contact
+ESURF
+
+*ENDIF
+
+/COM,---------------------------------------------------------------------------
+/COM,OUTER RING TO BALL
+/COM,---------------------------------------------------------------------------
+
+*IF,ignore_ball,EQ,false,AND,make_companion_pairs,EQ,true,THEN
+
+! Pair outer ring to ball
+*SET,pair_outring_ball,23
+
+! Contact elements on outer ring
+CMSEL,S,outring_facing_ball,AREA $ NSLA,S,1
+REAL,pair_outring_ball
+TYPE,element_contact
+ESURF
+
+! Target elements on ball
+CMSEL,S,ball_facing_outring,AREA $ NSLA,S,1
+REAL,pair_outring_ball
+TYPE,element_target
+ESURF
+
+*ENDIF
+
+/COM,---------------------------------------------------------------------------
+/COM,STATISTICS
+/COM,---------------------------------------------------------------------------
+
+! Select everything
+ALLSEL,ALL
+
+! Number of nodes
+*GET,nodes_count,NODE,,COUNT
+! Number of elements
+*GET,elements_count,ELEM,,COUNT

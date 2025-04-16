@@ -1,0 +1,93 @@
+/COM,===========================================================================
+/COM,BOUNDARY CONDITIONS
+/COM,===========================================================================
+
+/PREP7
+
+*SET,add_self_weight,true
+
+/COM,---------------------------------------------------------------------------
+/COM,TEMPERATURE
+/COM,---------------------------------------------------------------------------
+
+! Number of sensors determines temperature
+*SET,heating_sensors,0
+
+*IF,heating_sensors,EQ,2,THEN
+	! Temperature difference 25 C
+	*SET,temperature_inner_ring,110
+	*SET,temperature_outer_ring,85
+*ELSEIF,heating_sensors,EQ,1,THEN
+	! Temperature difference 50 C
+	*SET,temperature_inner_ring,110
+	*SET,temperature_outer_ring,60
+*ELSEIF,heating_sensors,EQ,0,THEN
+	! Temperature difference 80 C
+	*SET,temperature_inner_ring,150
+	*SET,temperature_outer_ring,70
+*ENDIF
+
+! *SET,temperature_ball,(temperature_inner_ring+temperature_outer_ring)/2
+*SET,temperature_ball,MAX(temperature_inner_ring,temperature_outer_ring)
+! *SET,temperature_ball,20
+
+! Reference temperature
+TREF,20
+
+! Uniform temperature inner ring
+CMSEL,S,inring_volume,VOLU
+BFV,ALL,TEMP,temperature_inner_ring
+
+! Uniform temperature outer ring
+CMSEL,S,outring_volume,VOLU
+BFV,ALL,TEMP,temperature_outer_ring
+
+*IF,ignore_ball,NE,true,THEN
+
+	! Uniform temperature ball
+	CMSEL,S,ball_volume,VOLU
+	BFV,ALL,TEMP,temperature_ball
+
+*ENDIF
+
+/COM,---------------------------------------------------------------------------
+/COM,AXIAL DISPLACEMENT
+/COM,---------------------------------------------------------------------------
+
+! No displacement in axial direction
+CSYS,0
+*IF,mirror_symmetry,EQ,false,AND,add_self_weight,EQ,true,THEN
+	CMSEL,S,inring_volume,VOLU
+	NSLV,S,1
+	NSEL,R,LOC,Z,-inring_thickness/2,-inring_thickness/2
+*ELSE
+	NSEL,S,LOC,Z,0,0
+*ENDIF
+D,ALL,UZ,0
+ALLSEL,ALL
+
+/COM,---------------------------------------------------------------------------
+/COM,CYCLIC SYMMETRY
+/COM,---------------------------------------------------------------------------
+
+! No displacement in tangential direction on the ball side
+CSYS,1
+NSEL,S,LOC,Y,0,0
+D,ALL,UY,0
+NSEL,ALL
+
+! No displacement in tangential direction on the other side
+LOCAL,200,CYLIN,0,0,0,ball_sector_angle/2,0,0
+NSEL,S,LOC,Y,0,0
+DSYM,SYMM,Y,200
+NSEL,ALL
+
+/COM,---------------------------------------------------------------------------
+/COM,WEIGHT
+/COM,---------------------------------------------------------------------------
+
+*IF,mirror_symmetry,EQ,false,AND,add_self_weight,EQ,true,THEN
+	ACEL,0,0,-9.8*meter/(second**2)
+*ENDIF
+
+ALLSEL,ALL

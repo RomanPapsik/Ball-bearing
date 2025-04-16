@@ -1,0 +1,51 @@
+/COM,===========================================================================
+/COM,MATERIAL PROPERTIES
+/COM,===========================================================================
+
+/PREP7
+
+/COM,---------------------------------------------------------------------------
+/COM,Silicon nitride
+/COM,---------------------------------------------------------------------------
+
+! Unique number
+*SET,Si3N4,1
+
+! Young modulus
+*SET,Si3N4_Young,290*gigapascal
+MP,EX,Si3N4,Si3N4_Young
+
+! Poisson ratio
+*SET,Si3N4_Poisson,0.268
+MP,PRXY,Si3N4,Si3N4_Poisson
+
+! Thermal expansion
+*SET,Si3N4_CTE,2.13E-6
+MP,ALPX,Si3N4,Si3N4_CTE
+
+! Density
+*SET,Si3N4_Density,3187*kilogram/(meter**3)
+MP,DENS,Si3N4,Si3N4_Density
+
+/COM,---------------------------------------------------------------------------
+/COM,High-carbon, chromium-manganese-silicon alloy
+/COM,---------------------------------------------------------------------------
+
+! Unique number
+*SET,CrMnSi,2
+
+! Young modulus
+*SET,CrMnSi_Young,210*gigapascal
+MP,EX,CrMnSi,CrMnSi_Young
+
+! Poisson ratio
+*SET,CrMnSi_Poisson,0.3
+MP,PRXY,CrMnSi,CrMnSi_Poisson
+
+! Thermal expansion
+*SET,CrMnSi_CTE,11.9E-6
+MP,ALPX,CrMnSi,CrMnSi_CTE
+
+! Density
+*SET,CrMnSi_Density,7850*kilogram/(meter**3)
+MP,DENS,CrMnSi,CrMnSi_Density

@@ -1,0 +1,95 @@
+/COM,===========================================================================
+/COM,SETUP
+/COM,===========================================================================
+
+FINISH
+
+/COM,---------------------------------------------------------------------------
+/COM,RESET
+/COM,---------------------------------------------------------------------------
+
+! Get information about batch/interactive mode
+*GET,is_interactive,ACTIVE,0,INT
+! Do only in interactive mode to prevent deleting command line arguments
+*IF,is_interactive,NE,0,THEN
+	! Clear everything
+	/CLEAR,NOSTART
+*ENDIF
+
+/TITLE,Bearing
+
+/COM,---------------------------------------------------------------------------
+/COM,CONSTANTS
+/COM,---------------------------------------------------------------------------
+
+! Boolean data types
+*SET,true,1
+*SET,false,0
+
+! Meshing methods
+*SET,free_mesh,0
+*SET,mapped_mesh,1
+
+! Meshing methods
+*SET,hexahedral_mesh,0
+*SET,tetrahedral_mesh,1
+
+! Define the number Pi
+*SET,PI,3.141592653589793
+
+/COM,---------------------------------------------------------------------------
+/COM,UNITS
+/COM,---------------------------------------------------------------------------
+
+! Length
+*SET,meter,1E3
+*SET,millimeter,1
+*SET,micrometer,1E-3
+
+! Force
+*SET,newton,1
+*SET,kilogram,1
+
+! Pressure
+*SET,gigapascal,1E3
+*SET,megapascal,1
+
+! Time
+*SET,second,1
+
+/COM,---------------------------------------------------------------------------
+/COM,TOLERANCE
+/COM,---------------------------------------------------------------------------
+
+! Initial tolerance for boolean operations
+BTOL,micrometer/1E3
+
+! Initial tolerance for selections
+SELTOL,micrometer/1E3
+
+/COM,---------------------------------------------------------------------------
+/COM,VIEW
+/COM,---------------------------------------------------------------------------
+
+! Use degrees
+*AFUN,DEG
+! View direction
+/VIEW,1,-1,-1,1
+! View rotation
+/ANGLE,1,60
+! Displacement scaling
+/DSCALE,1,1
+
+/COM,---------------------------------------------------------------------------
+/COM,COLOR MAP
+/COM,---------------------------------------------------------------------------
+
+! Load a symmetric colormap
+/CMAP,'blue-gray-red','cmap'
+
+/COM,---------------------------------------------------------------------------
+/COM,ABBREVIATIONS
+/COM,---------------------------------------------------------------------------
+
+*ABBR,'RESTART',/INPUT,Bearing-0,inp
+*ABBR,'EXPORT',/INPUT,Bearing-8-Export,inp

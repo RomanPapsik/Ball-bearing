@@ -1,0 +1,122 @@
+/COM,===========================================================================
+/COM,RESULTS
+/COM,===========================================================================
+
+/POST1
+
+! Expand model about symmetries
+! CSYS,1
+! /EXPAND,1,RECT,HALF,0,1e-10,0,2,LPOLAR,HALF,,1e-10,0,9,LPOLAR,FULL,0,360/balls_count,0
+! /FOCUS,1,ball_centre/2,0,0
+
+! Show reactions
+/PBC,ALL,,0
+
+/COM,---------------------------------------------------------------------------
+/COM,PATH ON BALL FACING OUTER RING
+/COM,---------------------------------------------------------------------------
+
+! Select ball elements
+VSEL,S,VOLU,,301,308
+ESLV,S
+NSLE,S
+
+! Ball spherical coordinates
+CSKP,300,SPHE,300,312,332
+RSYS,300
+
+! Plot stress
+/CONTOUR,1,,-100,50,100
+PLESOL,S,1
+
+/COM,---------------------------------------------------------------------------
+/COM,PATH ON BALL FACING INNER RING
+/COM,---------------------------------------------------------------------------
+
+! Initialize new path
+PADELE,path_inring $ PATH,path_inring,3,4+6,1000
+! Define path points
+CSKP,300,SPHE,300,312,332
+PPATH,1,node(ball_diameter/2,180,45)
+PPATH,2,node(ball_diameter/2,180,0)
+PPATH,3,node(ball_diameter/2,135,0)
+! Map onto path
+RSYS,300
+PDEF,sx,S,X,AVG
+PDEF,sy,S,Y,AVG
+PDEF,sz,S,Z,AVG
+PDEF,si,S,1,AVG
+PDEF,sii,S,2,AVG
+PDEF,siii,S,3,AVG
+! Save current path into an array
+PAGET,path_inring,TABLE
+ALLSEL,ALL
+! Set axes
+/AXLAB,X,Path
+/AXLAB,Y,Value
+/XRANGE!,0,150*millimeter
+/YRANGE,-100*megapascal,100*megapascal
+! Plot paths
+PLPATH,si,sii,siii
+
+/COM,---------------------------------------------------------------------------
+/COM,PATH ON BALL FACING OUTER RING
+/COM,---------------------------------------------------------------------------
+
+! Initialize new path
+PADELE,path_outring $ PATH,path_outring,3,4+6,401
+! Define path points
+CSKP,300,SPHE,300,312,332
+PPATH,1,node(ball_diameter/2,0,45)
+PPATH,2,node(ball_diameter/2,0,0)
+PPATH,3,node(ball_diameter/2,45,0)
+! Map onto path
+RSYS,300
+PDEF,sx,S,X,AVG
+PDEF,sy,S,Y,AVG
+PDEF,sz,S,Z,AVG
+PDEF,si,S,1,AVG
+PDEF,sii,S,2,AVG
+PDEF,siii,S,3,AVG
+! Save current path into an array
+PAGET,path_outring,TABLE
+ALLSEL,ALL
+! Set axes
+/AXLAB,X,Path
+/AXLAB,Y,Value
+/XRANGE!,0,150*millimeter
+/YRANGE,-100*megapascal,100*megapascal
+! Plot paths
+PLPATH,si,sii,siii
+
+/COM,---------------------------------------------------------------------------
+/COM,OPTIONAL IMAGE EXPORT
+/COM,---------------------------------------------------------------------------
+
+*IF,1,EQ,2,THEN
+
+! Make background white
+/RGB,INDEX,100,100,100,0
+! Make lines black
+/RGB,INDEX,0,0,0,15
+ 
+! Change output to file
+/SHOW,PNG
+! Set highest compression level
+PNGR,COMP,ON,9
+! Set pixel resolution
+/GFILE,2400
+! Replot to file
+/REPLOT
+! Close file
+/SHOW,CLOSE
+
+! Make background black
+/RGB,INDEX,0,0,0,0
+! Make lines white
+/RGB,INDEX,100,100,100,15
+
+! Replot if necessary
+/REPLOT
+
+*ENDIF

@@ -1,0 +1,56 @@
+/COM,===========================================================================
+/COM,SOLUTION
+/COM,===========================================================================
+
+/SOLU
+
+! New analysis
+ANTYPE,STATIC,NEW
+
+! Save all nodal data for every substep
+OUTRES,ALL,ALL
+
+! Direct sparse solver
+EQSLV,SPAR
+DSPOPTION,,INCORE
+
+! Do not forget to turn on the GPU acceleration
+! ANSGPU_OVERRIDE=1
+
+! Substeps
+*IF,ignore_ball,EQ,true,THEN
+	! Large deformations
+	NLGEOM,OFF
+	! Time stepping
+	AUTOTS,OFF
+	NSUBST,1
+*ELSE
+	! Large deformations
+	NLGEOM,ON
+	! Time stepping
+	AUTOTS,ON
+	DELTIM,0.1,0.0001,0.2
+*ENDIF
+
+! Select everything
+ALLSEL,ALL
+
+! Solve
+/UIS,MSGPOP,3
+SOLVE
+/UIS,MSGPOP,0
+
+! Make a backup
+*DIM,filename_db,STRING,248
+*IF,mirror_symmetry,EQ,false,THEN
+	*SET,filename_db(1),'Tinring-%CHRVAL(temperature_inner_ring)%-Toutring-%CHRVAL(temperature_outer_ring)%-Tball-%CHRVAL(temperature_ball)%-Symm-36'
+*ELSE
+	*SET,filename_db(1),'Tinring-%CHRVAL(temperature_inner_ring)%-Toutring-%CHRVAL(temperature_outer_ring)%-Tball-%CHRVAL(temperature_ball)%-Symm-18'
+*ENDIF
+
+*SET,unconverged,0 $ *SET,converged,1
+*GET,solution_status,ACTIVE,,SOLU,CNVG
+*IF,solution_status,EQ,converged,THEN
+	FINISH
+	SAVE,filename_db(1),db,,ALL
+*ENDIF
