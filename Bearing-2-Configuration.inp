@@ -1,0 +1,18 @@
+/COM,===========================================================================
+/COM,CONFIGURATION
+/COM,===========================================================================
+
+! Number of sensors determines temperature
+*SET,heating_sensors,0
+
+! Optional omitting the ball keeping only rings
+*SET,ignore_ball,false
+
+! Optional reversed companion contact pair
+*SET,make_companion_pairs,true
+
+! Optional weight of components
+*SET,add_self_weight,false
+
+! Optinal use of symmetry when self weight is ignored
+*SET,mirror_symmetry,true
