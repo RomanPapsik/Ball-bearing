@@ -5,30 +5,30 @@
 ! Setup
 /INPUT,Bearing-1-Setup,inp
 
+! Configuration
+/INPUT,Bearing-2-Configuration,inp
+
 ! Material
-/INPUT,Bearing-2-Material,inp
+/INPUT,Bearing-3-Material,inp
 
 ! Geometry
-/INPUT,Bearing-3-Geometry,inp
+/INPUT,Bearing-5-Geometry,inp
 
 ! Mesh
-/INPUT,Bearing-4-Mesh,inp
+/INPUT,Bearing-5-Mesh,inp
 
 ! Boundary conditions
-/INPUT,Bearing-5-BCs,inp
+/INPUT,Bearing-6-BCs,inp
 
 ! Solution
-/INPUT,Bearing-6-Solution,inp
+/INPUT,Bearing-7-Solution,inp
 
 *IF,solution_status,EQ,converged,THEN
 
 ! Results
-/INPUT,Bearing-7-Results,inp
+/INPUT,Bearing-8-Results,inp
 
 ! Export
-/INPUT,Bearing-8-Export,inp
+/INPUT,Bearing-9-Export,inp
 
 *ENDIF
-
-! Axial symmetry double check
-! /INPUT,Bearing-9-Axisymm,inp
