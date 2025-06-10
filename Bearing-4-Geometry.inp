@@ -206,11 +206,11 @@ KSEL,S,KP,,111,121,10 $ KSEL,A,KP,,118,128,10 $ KSEL,A,KP,,148,158,10 $ LSLK,S,1
 CM,inring_facing_ball,AREA
 
 ! Ball contact surface facing inner ring
-KSEL,S,KP,,3212,3214 $ KSEL,A,KP,,3222,3224 $ LSLK,S,1 $ ASLL,S,1
+KSEL,S,KP,,3242,3244 $ KSEL,A,KP,,3252,3254 $ LSLK,S,1 $ ASLL,S,1
 CM,ball_facing_inring,AREA
 
 ! Ball contact surface facing outer ring
-KSEL,S,KP,,3242,3244 $ KSEL,A,KP,,3252,3254 $ LSLK,S,1 $ ASLL,S,1
+KSEL,S,KP,,3212,3214 $ KSEL,A,KP,,3222,3224 $ LSLK,S,1 $ ASLL,S,1
 CM,ball_facing_outring,AREA
 
 ! Outer ring contact surface facing ball
