@@ -25,7 +25,9 @@ MP,ALPX,Si3N4,Si3N4_CTE
 
 ! Density
 *SET,Si3N4_Density,3187*kilogram/(meter**3)
-MP,DENS,Si3N4,Si3N4_Density
+*IF,add_self_weight,EQ,true,THEN
+	MP,DENS,Si3N4,Si3N4_Density
+*ENDIF
 
 /COM,---------------------------------------------------------------------------
 /COM,High-carbon, chromium-manganese-silicon alloy
@@ -48,4 +50,6 @@ MP,ALPX,CrMnSi,CrMnSi_CTE
 
 ! Density
 *SET,CrMnSi_Density,7850*kilogram/(meter**3)
-MP,DENS,CrMnSi,CrMnSi_Density
+*IF,add_self_weight,EQ,true,THEN
+	MP,DENS,CrMnSi,CrMnSi_Density
+*ENDIF
