@@ -37,6 +37,12 @@ FINISH
 ! Define the number Pi
 *SET,PI,3.141592653589793
 
+! Temperature switches
+*SET,room_temperature,0
+*SET,min_temperature,1
+*SET,max_temperature,2
+*SET,average_temperature,3
+
 /COM,---------------------------------------------------------------------------
 /COM,UNITS
 /COM,---------------------------------------------------------------------------
