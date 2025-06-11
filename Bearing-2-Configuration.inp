@@ -5,9 +5,13 @@
 ! Number of sensors determines temperature
 *SET,heating_sensors,0
 
+! Switches of ball temperature
+*SET,room_temperature,0
+*SET,min_temperature,1
+*SET,max_temperature,2
+*SET,average_temperature,3
 ! Choice of ball temperature
-! 0=room 1=lesser 2=greater 3=average
-*SET,temperature_switch,0
+*SET,temperature_switch,max_temperature
 
 ! Optional omitting the ball keeping only rings
 *SET,ignore_ball,false
