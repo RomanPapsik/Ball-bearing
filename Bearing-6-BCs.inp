@@ -4,14 +4,9 @@
 
 /PREP7
 
-*SET,add_self_weight,true
-
 /COM,---------------------------------------------------------------------------
 /COM,TEMPERATURE
 /COM,---------------------------------------------------------------------------
-
-! Number of sensors determines temperature
-*SET,heating_sensors,0
 
 *IF,heating_sensors,EQ,2,THEN
 	! Temperature difference 25 C
@@ -27,9 +22,16 @@
 	*SET,temperature_outer_ring,70
 *ENDIF
 
-! *SET,temperature_ball,(temperature_inner_ring+temperature_outer_ring)/2
-*SET,temperature_ball,MAX(temperature_inner_ring,temperature_outer_ring)
-! *SET,temperature_ball,20
+! Temperature of ball
+*IF,temperature_switch,EQ,room_temperature,THEN
+	*SET,temperature_ball,20
+*ELSEIF,temperature_switch,EQ,min_temperature,THEN
+	*SET,temperature_ball,MIN(temperature_inner_ring,temperature_outer_ring)
+*ELSEIF,temperature_switch,EQ,max_temperature,THEN
+	*SET,temperature_ball,MAX(temperature_inner_ring,temperature_outer_ring)
+*ELSEIF,temperature_switch,EQ,average_temperature,THEN
+	*SET,temperature_ball,1/2*(temperature_inner_ring+temperature_outer_ring)
+*ENDIF
 
 ! Reference temperature
 TREF,20
