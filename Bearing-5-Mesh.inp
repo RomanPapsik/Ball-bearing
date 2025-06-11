@@ -4,8 +4,6 @@
 
 /PREP7
 
-*SET,make_companion_pairs,true
-
 /COM,---------------------------------------------------------------------------
 /COM,STRUCTURAL ELEMENTS
 /COM,---------------------------------------------------------------------------
@@ -21,36 +19,49 @@ ET,auxiliary_element,MESH200
 KEYOPT,auxiliary_element,1,7
 
 /COM,---------------------------------------------------------------------------
-/COM,MESH RINGS
+/COM,MESH INNER RING
 /COM,---------------------------------------------------------------------------
 
+! Sizing
+KSEL,S,KP,,100,199
+KESIZE,ALL,1*millimeter
+KSEL,S,KP,,118,128,10 $ KSEL,A,KP,,111,121,10 $ KSEL,A,KP,,148,158,10
+KESIZE,ALL,1*millimeter
+
+! Surface
 TYPE,auxiliary_element
 MSHAPE,hexahedral_mesh,2D
 MSHKEY,free_mesh
+AMESH,inring_facing_ball
 
-KSEL,S,KP,,101,102,1 $ KSEL,A,KP,,108,109,1
-KSEL,A,KP,,201,202,1 $ KSEL,A,KP,,208,209,1
-KSEL,A,KP,,118,119,1 $ KSEL,A,KP,,508,509,1
-KESIZE,ALL,1*millimeter
-LSLK,S,1 $ ASLL,S,1
-AMESH,ALL $ ALLSEL,ALL
-
+! Volume
 TYPE,element_structural
 MSHAPE,hexahedral_mesh,3D
-MSHKEY,mapped_mesh
-
-LESIZE,112,,,14,0.05/1,1,,,NO
-LESIZE,252,,,16,0.05/1,1,,,NO
-VSWEEP,101,101,106
-VSWEEP,207,230,233
-*IF,mirror_symmetry,EQ,true,THEN
-VSWEEP,102,107,111
-VSWEEP,507,528,530
-*ENDIF
-
-! Mesh inner ring
-ESIZE,4*millimeter
+MSHKEY,free_mesh
+ESIZE,1*millimeter
 VSWEEP,inring_volume
+
+/COM,---------------------------------------------------------------------------
+/COM,MESH OUTER RING
+/COM,---------------------------------------------------------------------------
+
+! Sizing
+KSEL,S,KP,,200,299
+KESIZE,ALL,1*millimeter
+KSEL,S,KP,,218,228,10 $ KSEL,A,KP,,211,221,10 $ KSEL,A,KP,,248,258,10
+KESIZE,ALL,1*millimeter
+
+! Surface
+TYPE,auxiliary_element
+MSHAPE,hexahedral_mesh,2D
+MSHKEY,free_mesh
+AMESH,outring_facing_ball
+
+! Volume
+TYPE,element_structural
+MSHAPE,hexahedral_mesh,3D
+MSHKEY,free_mesh
+ESIZE,1*millimeter
 VSWEEP,outring_volume
 
 /COM,---------------------------------------------------------------------------
@@ -59,37 +70,19 @@ VSWEEP,outring_volume
 
 *IF,ignore_ball,EQ,false,THEN
 
-CMSEL,S,ball_volume,VOLU
+! Contact surfaces
 MSHAPE,hexahedral_mesh,2D
-MSHKEY,free_mesh
-
-! Volume nearest to the outer ring
-KESIZE,3213,1*millimeter
-KESIZE,3212,1*millimeter $ KESIZE,3222,1*millimeter
-KESIZE,3223,1*millimeter $ KESIZE,3224,1*millimeter $ KESIZE,3214,1*millimeter
+MSHKEY,mapped_mesh
 TYPE,auxiliary_element
-AMESH,ball_facing_outring
-LESIZE,307,1*millimeter,,,10,1,,,NO
-TYPE,element_structural
-VSWEEP,301,306,301 ! Upper
-VSWEEP,312,347,350 ! Lower
+ESIZE,1*millimeter
+AMESH,ball_facing_inring $ AMESH,ball_facing_outring
 
-! Volume nearest to the inner ring
-KESIZE,3253,1*millimeter $ KESIZE,3243,1*millimeter
-KESIZE,3252,1*millimeter $ KESIZE,3242,1*millimeter
-KESIZE,3254,1*millimeter $ KESIZE,3244,1*millimeter
-TYPE,auxiliary_element
-AMESH,ball_facing_inring
-LESIZE,332,1*millimeter,,,0.1,1,,,NO
-TYPE,element_structural
-VSWEEP,304,321,317 ! Upper
-VSWEEP,309,334,338 ! Lower
-
-! Mesh ball
-ESIZE,4*millimeter
+! Volumes
 MSHAPE,tetrahedral_mesh,3D
 MSHKEY,free_mesh
 TYPE,element_structural
+CMSEL,S,ball_volume,VOLU
+ESIZE,1*millimeter
 VMESH,ball_volume
 
 *ENDIF
